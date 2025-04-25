@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<h1>{{ titulo }}</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    <div class="form-group">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="{% url 'listar_chamados' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

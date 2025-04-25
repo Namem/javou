@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Lista de Chamados{% endblock %}
+{% block content %}
+<h1>Chamados</h1>
+<a href="{% url 'novo_chamado' %}" class="btn btn-primary mb-3">Novo Chamado</a>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>#</th><th>Título</th><th>Status</th><th>Prioridade</th><th>Responsável</th><th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for chamado in chamados %}
+    <tr>
+      <td>{{ chamado.id }}</td>
+      <td>{{ chamado.titulo }}</td>
+      <td>{{ chamado.status }}</td>
+      <td>{{ chamado.prioridade }}</td>
+      <td>{{ chamado.responsavel }}</td>
+      <td>
+        <a href="{% url 'editar_chamado' chamado.id %}" class="btn btn-sm btn-warning">Editar</a>
+        {% if chamado.status != 'ENCERRADO' %}
+          <a href="{% url 'encerrar_chamado' chamado.id %}" class="btn btn-sm btn-danger">Encerrar</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

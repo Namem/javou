@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <!-- Card: Chamados Abertos -->
+    <div class="col-lg-4 col-6">
+      <a href="{% url 'listar_chamados' %}?status=aberto" style="text-decoration: none; color: inherit;">
+        <div class="small-box bg-info">
+          <div class="inner">
+            <h3>{{ total_abertos }}</h3>
+            <p>Chamados Abertos</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-folder-open"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card: Chamados Encerrados -->
+    <div class="col-lg-4 col-6">
+      <a href="{% url 'listar_chamados' %}?status=encerrado" style="text-decoration: none; color: inherit;">
+        <div class="small-box bg-success">
+          <div class="inner">
+            <h3>{{ total_encerrados }}</h3>
+            <p>Chamados Encerrados</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Card: Chamados Abertos Hoje -->
+    <div class="col-lg-4 col-6">
+      <a href="{% url 'listar_chamados' %}?abertos_hoje=1" style="text-decoration: none; color: inherit;">
+        <div class="small-box bg-warning">
+          <div class="inner">
+            <h3>{{ abertos_hoje }}</h3>
+            <p>Abertos Hoje</p>
+          </div>
+          <div class="icon">
+            <i class="fas fa-calendar-day"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
