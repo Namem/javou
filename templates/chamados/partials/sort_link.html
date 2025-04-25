@@ -1,0 +1,15 @@
+{% with new_direction='asc' %}
+  {% if ordenacao.sort == field %}
+    {% if ordenacao.direction == 'asc' %}
+      {% with new_direction='desc' %}
+      {% endwith %}
+    {% endif %}
+  {% endif %}
+{% endwith %}
+
+{% for k, v in filtros.items %}
+  {% if v %}
+    {{ k }}={{ v }}&
+  {% endif %}
+{% endfor %}
+sort={{ field }}&direction={{ new_direction }}

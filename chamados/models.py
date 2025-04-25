@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 
 class Chamado(models.Model):
     STATUS_CHOICES = [
-        ('ABERTO', 'Aberto'),
-        ('ENCERRADO', 'Encerrado'),
+    ('ABERTO', 'Aberto'),
+    ('EM_ATENDIMENTO', 'Em Atendimento'),
+    ('ENCERRADO', 'Encerrado'),
     ]
+
     PRIORIDADE_CHOICES = [
         ('BAIXA', 'Baixa'),
         ('MEDIA', 'Média'),

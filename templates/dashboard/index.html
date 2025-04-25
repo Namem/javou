@@ -48,5 +48,20 @@
       </a>
     </div>
   </div>
+    <!-- Card: Em Atendimento -->
+    <div class="col-lg-4 col-6">
+        <a href="{% url 'listar_chamados' %}?status=em_atendimento" style="text-decoration: none; color: inherit;">
+        <div class="small-box bg-warning">
+            <div class="inner">
+            <h3>{{ total_em_atendimento }}</h3>
+            <p>Em Atendimento</p>
+            </div>
+            <div class="icon">
+            <i class="fas fa-headset"></i>
+            </div>
+        </div>
+        </a>
+    </div>
+  
 </div>
 {% endblock %}

@@ -3,23 +3,75 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Chamado
 from .forms import ChamadoForm
+from django.contrib.auth.models import User
+from django.utils.timezone import localdate
+from django.core.paginator import Paginator
+
 
 @login_required
 def listar_chamados(request):
-    status = request.GET.get('status')
-    hoje = request.GET.get('abertos_hoje')
+    sort = request.GET.get('sort', 'data_abertura')
+    direction = request.GET.get('direction', 'desc')
 
     chamados = Chamado.objects.all()
+
+    # Filtros
+    status = request.GET.get('status')
+    prioridade = request.GET.get('prioridade')
+    responsavel_nome = request.GET.get('responsavel_nome')
+    busca = request.GET.get('busca')
 
     if status:
         chamados = chamados.filter(status=status.upper())
 
-    if hoje:
-        from django.utils.timezone import localdate
-        chamados = chamados.filter(data_abertura__date=localdate())
+    if prioridade:
+        chamados = chamados.filter(prioridade=prioridade.upper())
 
-    chamados = chamados.order_by('-data_abertura')
-    return render(request, 'chamados/lista.html', {'chamados': chamados})
+    if responsavel_nome:
+        chamados = chamados.filter(responsavel__username__icontains=responsavel_nome)
+
+    if busca:
+        if busca.isdigit():
+            chamados = chamados.filter(id=busca)
+        else:
+            chamados = chamados.filter(titulo__icontains=busca)
+
+    order = f"{'-' if direction == 'desc' else ''}{sort}"
+    chamados = chamados.order_by(order)
+
+    responsaveis = User.objects.all()
+
+    # Paginação
+    paginator = Paginator(chamados, 5)  # 5 chamados por página
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'chamados/lista.html', {
+        'chamados': page_obj,
+        'responsaveis': responsaveis,
+        'filtros': {
+            'status': status,
+            'prioridade': prioridade,
+            'responsavel_nome': responsavel_nome,
+            'busca': busca,
+        },
+        'ordenacao': {
+            'sort': sort,
+            'direction': direction,
+        },
+        'page_obj': page_obj,
+    })
+
+
+@login_required
+def assumir_chamado(request, id):
+    chamado = get_object_or_404(Chamado, id=id)
+    chamado.responsavel = request.user
+    if chamado.status == 'ABERTO':
+        chamado.status = 'EM_ATENDIMENTO'
+    chamado.save()
+    messages.success(request, f"Você assumiu o chamado #{chamado.id}.")
+    return redirect('listar_chamados')
 
 
 @login_required
