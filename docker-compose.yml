@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    container_name: helpdesk_db
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: helpdesk_db
+      POSTGRES_USER: helpdesk_user
+      POSTGRES_PASSWORD: 96462191
+#    ports:
+ #     - "5432:5432"
+
+  web:
+    build: .
+    container_name: helpdesk_web
+    entrypoint: ["./entrypoint.sh"]
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]
+      - POSTGRES_DB=helpdesk_db
+      - POSTGRES_USER=helpdesk_user
+      - POSTGRES_PASSWORD=96462191
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+
+  adminer:
+    image: adminer
+    container_name: helpdesk_adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
+
