@@ -111,33 +111,14 @@
           <td>
             <a href="{% url 'editar_chamado' chamado.id %}" class="btn btn-sm btn-warning" title="Editar chamado">Editar</a>
             {% if chamado.status != 'ENCERRADO' %}
-              <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalEncerrar{{ chamado.id }}" title="Encerrar chamado">Encerrar</button>
+            <form action="{% url 'encerrar_chamado' chamado.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger" title="Encerrar chamado">Encerrar</button>
+              </form>              
             {% endif %}
             <a href="{% url 'assumir_chamado' chamado.id %}" class="btn btn-sm btn-info" title="Assumir chamado">Assumir</a>
           </td>
         </tr>
-
-        <!-- Modal Encerrar -->
-        <div class="modal fade" id="modalEncerrar{{ chamado.id }}" tabindex="-1" role="dialog" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Encerrar Chamado</h5>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
-              <form method="post" action="{% url 'encerrar_chamado' chamado.id %}">
-                {% csrf_token %}
-                <div class="modal-body">
-                  Tem certeza que deseja encerrar o chamado <strong>#{{ chamado.id }}</strong>?
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                  <button type="submit" class="btn btn-danger">Confirmar</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       {% endfor %}
     </tbody>
   </table>
