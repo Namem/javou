@@ -80,11 +80,11 @@
   <table class="table table-bordered table-hover">
     <thead class="thead-dark">
       <tr>
-        <th><a href="?{% include 'chamados/partials/sort_link.html' with field='id' label='#' %}">#</a></th>
-        <th><a href="?{% include 'chamados/partials/sort_link.html' with field='titulo' label='Título' %}">Título</a></th>
-        <th><a href="?{% include 'chamados/partials/sort_link.html' with field='status' label='Status' %}">Status</a></th>
-        <th><a href="?{% include 'chamados/partials/sort_link.html' with field='prioridade' label='Prioridade' %}">Prioridade</a></th>
-        <th><a href="?{% include 'chamados/partials/sort_link.html' with field='responsavel__username' label='Responsável' %}">Responsável</a></th>
+        <th>#</th>
+        <th>Título</th>
+        <th>Status</th>
+        <th>Prioridade</th>
+        <th>Responsável</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -111,7 +111,6 @@
           <td>
             <a href="{% url 'editar_chamado' chamado.id %}" class="btn btn-sm btn-warning" title="Editar chamado">Editar</a>
             {% if chamado.status != 'ENCERRADO' %}
-              <!-- Botão que abre modal -->
               <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalEncerrar{{ chamado.id }}" title="Encerrar chamado">Encerrar</button>
             {% endif %}
             <a href="{% url 'assumir_chamado' chamado.id %}" class="btn btn-sm btn-info" title="Assumir chamado">Assumir</a>
@@ -126,13 +125,16 @@
                 <h5 class="modal-title">Encerrar Chamado</h5>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
-              <div class="modal-body">
-                Tem certeza que deseja encerrar o chamado <strong>#{{ chamado.id }}</strong>?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <a href="{% url 'encerrar_chamado' chamado.id %}" class="btn btn-danger">Confirmar</a>
-              </div>
+              <form method="post" action="{% url 'encerrar_chamado' chamado.id %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                  Tem certeza que deseja encerrar o chamado <strong>#{{ chamado.id }}</strong>?
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                  <button type="submit" class="btn btn-danger">Confirmar</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>

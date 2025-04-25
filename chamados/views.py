@@ -6,7 +6,7 @@ from .forms import ChamadoForm
 from django.contrib.auth.models import User
 from django.utils.timezone import localdate
 from django.core.paginator import Paginator
-
+from django.views.decorators.http import require_POST
 
 @login_required
 def listar_chamados(request):
@@ -101,10 +101,11 @@ def editar_chamado(request, id):
         form = ChamadoForm(instance=chamado)
     return render(request, 'chamados/form.html', {'form': form, 'titulo': f'Editar Chamado #{id}'})
 
+@require_POST
 @login_required
 def encerrar_chamado(request, id):
     chamado = get_object_or_404(Chamado, id=id)
     chamado.status = 'ENCERRADO'
     chamado.save()
-    messages.info(request, f"Chamado #{id} encerrado.")
+    messages.success(request, f"Chamado #{id} encerrado com sucesso.")
     return redirect('listar_chamados')
