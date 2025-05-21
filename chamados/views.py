@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import localdate
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+
 
 @login_required
 def listar_chamados(request):
