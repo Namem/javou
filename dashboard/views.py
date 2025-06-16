@@ -14,11 +14,14 @@ def dashboard(request):
     abertos_hoje = Chamado.objects.filter(data_abertura__date=localdate(), status='ABERTO').count()
     total_em_atendimento = Chamado.objects.filter(status='EM_ATENDIMENTO').count()
 
+    # --- CÓDIGO CORRIGIDO ABAIXO ---
     ranking = (
         User.objects
-        .annotate(qtd_chamados=Count('chamado'))
+        .filter(profile__is_technician=True)  # 1. Filtramos para mostrar apenas técnicos no ranking.
+        .annotate(qtd_chamados=Count('chamados_responsaveis'))  # 2. Usamos o nome correto da relação.
         .order_by('-qtd_chamados')[:10]
     )
+    # --- FIM DO CÓDIGO CORRIGIDO ---
 
     labels = [user.username for user in ranking]
     data = [user.qtd_chamados for user in ranking]

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhe do Chamado #{{ chamado.id }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title">Histórico de Comentários</h3>
+      </div>
+      <div class="card-body">
+        {% for comentario in comentarios %}
+          <div class="post">
+            <div class="user-block">
+              <span class="username ml-0">
+                <a href="#">{{ comentario.autor.get_full_name|default:comentario.autor.username }}</a>
+              </span>
+              <span class="description ml-0">Comentou em - {{ comentario.data_criacao|date:"d/m/Y H:i" }}</span>
+            </div>
+            <p>{{ comentario.texto|linebreaksbr }}</p>
+          </div>
+          <hr>
+        {% empty %}
+          <p>Nenhum comentário adicionado ainda.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if user.profile.is_technician %}
+    <div class="card card-info">
+        <div class="card-header">
+            <h3 class="card-title">Adicionar Novo Comentário</h3>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                {{ form_comentario.texto }}
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Enviar Comentário</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+  </div>
+
+  <div class="col-md-4">
+    <div class="card card-secondary">
+      <div class="card-header">
+        <h3 class="card-title">Detalhes do Chamado #{{ chamado.id }}</h3>
+      </div>
+      <div class="card-body">
+        <strong><i class="fas fa-book mr-1"></i> Título</strong>
+        <p class="text-muted">{{ chamado.titulo }}</p>
+        <hr>
+
+        <strong><i class="fas fa-user mr-1"></i> Solicitante</strong>
+        <p class="text-muted">{{ chamado.solicitante.get_full_name|default:chamado.solicitante.username }}</p>
+        <hr>
+
+        <strong><i class="fas fa-user-shield mr-1"></i> Responsável</strong>
+        <p class="text-muted">{{ chamado.responsavel.username|default:"Nenhum técnico assumiu" }}</p>
+        <hr>
+
+        <strong><i class="fas fa-tag mr-1"></i> Status</strong>
+        <p class="text-muted">{{ chamado.get_status_display }}</p>
+        <hr>
+
+        <strong><i class="fas fa-exclamation-triangle mr-1"></i> Prioridade</strong>
+        <p class="text-muted">{{ chamado.get_prioridade_display }}</p>
+        <hr>
+
+        <strong><i class="fas fa-info-circle mr-1"></i> Descrição Original</strong>
+        <p class="text-muted">{{ chamado.descricao|linebreaksbr }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
