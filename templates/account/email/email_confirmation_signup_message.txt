@@ -1,0 +1,9 @@
+{% load i18n %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Olá,
+
+Obrigado por se cadastrar no {{ site_name }}.
+
+Por favor, acesse o link abaixo para confirmar seu endereço de e-mail:
+{{ activate_url }}
+
+Atenciosamente,
+A equipe do {{ site_name }}{% endblocktrans %}

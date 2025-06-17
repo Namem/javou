@@ -9,6 +9,8 @@ from .models import Chamado
 from .forms import ChamadoForm
 from .forms import ChamadoForm, ComentarioForm
 from .models import Chamado, Comentario
+from django.core.mail import send_mail
+from django.conf import settings
 # Função auxiliar para verificar se o usuário é técnico
 # Usamos hasattr para evitar erros caso um usuário antigo não tenha perfil
 def is_technician(user):
@@ -126,13 +128,38 @@ def assumir_chamado(request, id):
 @require_POST
 @login_required
 def encerrar_chamado(request, id):
-    # Verificação de permissão
+    # Verificação de permissão (já estava correta)
     if not is_technician(request.user):
         raise PermissionDenied
         
     chamado = get_object_or_404(Chamado, id=id)
     chamado.status = 'ENCERRADO'
     chamado.save()
+
+    # ===================================================================
+    # INÍCIO DA MODIFICAÇÃO: Adicionar lógica de envio de e-mail
+    # ===================================================================
+    assunto = f"Seu chamado #{chamado.id} foi encerrado."
+    mensagem = (
+        f"Olá, {chamado.solicitante.username}.\n\n"
+        f"Seu chamado '{chamado.titulo}' foi marcado como resolvido e encerrado por nossa equipe.\n\n"
+        f"Se você acredita que o problema não foi resolvido, por favor, abra um novo chamado.\n\n"
+        "Agradecemos o seu contato.\nEquipe de Suporte Helpdesk"
+    )
+    email_remetente = settings.DEFAULT_FROM_EMAIL or 'suporte@helpdesk.com'
+    email_destinatario = [chamado.solicitante.email]
+
+    print(f"Enviando e-mail de CHAMADO ENCERRADO para {email_destinatario[0]}...")
+
+    send_mail(
+        assunto,
+        mensagem,
+        email_remetente,
+        email_destinatario,
+        fail_silently=False,
+    )
+
+
     messages.success(request, f"Chamado #{id} encerrado com sucesso.")
     return redirect('listar_chamados')
 
@@ -170,3 +197,5 @@ def detalhe_chamado(request, id):
     }
     
     return render(request, 'chamados/detalhe.html', contexto)
+
+

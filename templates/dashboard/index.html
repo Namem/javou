@@ -1,109 +1,97 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}Dashboard{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-  <div class="row">
-    <!-- Card: Chamados Abertos -->
-    <div class="col-lg-4 col-6">
-      <a href="{% url 'listar_chamados' %}?status=aberto" style="text-decoration: none; color: inherit;">
-        <div class="small-box bg-info">
-          <div class="inner">
-            <h3>{{ total_abertos }}</h3>
-            <p>Chamados Abertos</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-folder-open"></i>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <!-- Card: Chamados Encerrados -->
-    <div class="col-lg-4 col-6">
-      <a href="{% url 'listar_chamados' %}?status=encerrado" style="text-decoration: none; color: inherit;">
-        <div class="small-box bg-success">
-          <div class="inner">
-            <h3>{{ total_encerrados }}</h3>
-            <p>Chamados Encerrados</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-check-circle"></i>
-          </div>
-        </div>
-      </a>
-    </div>
-
-    <!-- Card: Chamados Abertos Hoje -->
-    <div class="col-lg-4 col-6">
-      <a href="{% url 'listar_chamados' %}?abertos_hoje=1" style="text-decoration: none; color: inherit;">
-        <div class="small-box bg-warning">
-          <div class="inner">
-            <h3>{{ abertos_hoje }}</h3>
-            <p>Abertos Hoje</p>
-          </div>
-          <div class="icon">
-            <i class="fas fa-calendar-day"></i>
-          </div>
-        </div>
-      </a>
-    </div>
-  </div>
-    <!-- Card: Em Atendimento -->
-    <div class="col-lg-4 col-6">
-        <a href="{% url 'listar_chamados' %}?status=em_atendimento" style="text-decoration: none; color: inherit;">
-        <div class="small-box bg-warning">
-            <div class="inner">
-            <h3>{{ total_em_atendimento }}</h3>
-            <p>Em Atendimento</p>
-            </div>
-            <div class="icon">
-            <i class="fas fa-headset"></i>
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ total_abertos }}</h3>
+                    <p>Chamados Abertos</p>
+                </div>
+                <div class="icon"><i class="ion ion-bag"></i></div>
             </div>
         </div>
-        </a>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ total_em_atendimento }}</h3>
+                    <p>Em Atendimento</p>
+                </div>
+                <div class="icon"><i class="ion ion-stats-bars"></i></div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ total_encerrados }}</h3>
+                    <p>Encerrados</p>
+                </div>
+                <div class="icon"><i class="ion ion-person-add"></i></div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-secondary">
+                <div class="inner">
+                    <h3>{{ total_chamados }}</h3>
+                    <p>Total de Chamados</p>
+                </div>
+                <div class="icon"><i class="ion ion-pie-graph"></i></div>
+            </div>
+        </div>
     </div>
-  
-</div>
-
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Ranking de Atendimentos</h3>
-      </div>
-      <div class="card-body">
-        <canvas id="rankingChart" height="100"></canvas>
-      </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-danger">
+                <div class="card-header">
+                    <h3 class="card-title">Chamados por Status</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            </div>
     </div>
-  </div>
 </div>
+{% endblock %}
 
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% block scripts %}
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+
 <script>
-  const ctx = document.getElementById('rankingChart').getContext('2d');
-  const chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: {{ labels|safe }},
-      datasets: [{
-        label: 'Chamados Atendidos',
-        data: {{ data|safe }},
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {      
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          precision: 0
-        }
-      }
-    }
-  });
-</script>
+$(function () {
+  // Pega os dados do contexto do Django
+  var statusLabels = {{ labels_status|safe }};
+  var statusData = {{ data_status|safe }};
 
+  // Configuração do Gráfico de Pizza (Doughnut)
+  var donutChartCanvas = $('#statusChart').get(0).getContext('2d');
+  var donutData = {
+    labels: statusLabels,
+    datasets: [
+      {
+        data: statusData,
+        backgroundColor : ['#00c0ef', '#f39c12', '#00a65a'], // Cores para Aberto, Em Atendimento, Encerrado
+      }
+    ]
+  }
+  var donutOptions = {
+    maintainAspectRatio : false,
+    responsive : true,
+  }
+  
+  // Cria o gráfico
+  new Chart(donutChartCanvas, {
+    type: 'doughnut',
+    data: donutData,
+    options: donutOptions
+  });
+})
+</script>
 {% endblock %}

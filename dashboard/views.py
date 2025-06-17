@@ -1,38 +1,42 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from chamados.models import Chamado
-from django.utils import timezone
-from django.utils.timezone import localdate
 from django.db.models import Count
-from django.contrib.auth.models import User
+from django.utils.translation import gettext as _
+
+# Função auxiliar para traduzir os status para o gráfico
+def traduzir_status(status_dict):
+    mapa_status = {
+        'ABERTO': _('Aberto'),
+        'EM_ATENDIMENTO': _('Em Atendimento'),
+        'ENCERRADO': _('Encerrado'),
+    }
+    return mapa_status.get(status_dict['status'], status_dict['status'])
+
 
 @login_required
 def dashboard(request):
-    hoje = timezone.now().date()
+    # Contagens gerais que já tínhamos
+    total_chamados = Chamado.objects.count()
     total_abertos = Chamado.objects.filter(status='ABERTO').count()
-    total_encerrados = Chamado.objects.filter(status='ENCERRADO').count()
-    abertos_hoje = Chamado.objects.filter(data_abertura__date=localdate(), status='ABERTO').count()
     total_em_atendimento = Chamado.objects.filter(status='EM_ATENDIMENTO').count()
+    total_encerrados = Chamado.objects.filter(status='ENCERRADO').count()
 
-    # --- CÓDIGO CORRIGIDO ABAIXO ---
-    ranking = (
-        User.objects
-        .filter(profile__is_technician=True)  # 1. Filtramos para mostrar apenas técnicos no ranking.
-        .annotate(qtd_chamados=Count('chamados_responsaveis'))  # 2. Usamos o nome correto da relação.
-        .order_by('-qtd_chamados')[:10]
-    )
-    # --- FIM DO CÓDIGO CORRIGIDO ---
 
-    labels = [user.username for user in ranking]
-    data = [user.qtd_chamados for user in ranking]
+    status_data = Chamado.objects.values('status').annotate(total=Count('status')).order_by('status')
+
+    # Prepara os dados para o Chart.js
+    labels_status = [traduzir_status(item) for item in status_data]
+    data_status = [item['total'] for item in status_data]
+
 
     contexto = {
+        'total_chamados': total_chamados,
         'total_abertos': total_abertos,
-        'total_encerrados': total_encerrados,
-        'abertos_hoje': abertos_hoje,
         'total_em_atendimento': total_em_atendimento,
-        'labels': labels,
-        'data': data,
+        'total_encerrados': total_encerrados,
+        'labels_status': labels_status,
+        'data_status': data_status,
     }
 
     return render(request, 'dashboard/index.html', contexto)

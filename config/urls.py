@@ -4,8 +4,14 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),  # login/logout
+    
+    
+    path('accounts/', include('allauth.urls')),
+    
     path('', include('dashboard.urls')), 
     path('chamados/', include('chamados.urls')),  
+
     path('', RedirectView.as_view(url='/accounts/login/', permanent=False)),  
 ]
+
+

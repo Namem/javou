@@ -1,0 +1,8 @@
+{% load i18n %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Olá,
+
+Você está recebendo este e-mail porque alguém tentou criar uma conta no site {{ site_name }} com o seu endereço de e-mail.
+
+Se não foi você, pode ignorar esta mensagem com segurança. Nenhuma ação é necessária.
+
+Atenciosamente,
+A equipe do {{ site_name }}{% endblocktrans %}

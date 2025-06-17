@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-        # apps do projeto
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    # apps do projeto
     'accounts',
     'chamados',
     'dashboard',
@@ -51,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -108,6 +112,28 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Usuário faz login com e-mail
+ACCOUNT_EMAIL_REQUIRED = True            # E-mail é obrigatório
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory' # E-mail precisa ser verificado
+ACCOUNT_USERNAME_REQUIRED = False          # Nome de usuário não é solicitado no cadastro
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True # Pede para digitar a senha duas vezes
+ACCOUNT_SESSION_REMEMBER = True          # Permite a opção "Lembrar de mim"
+ACCOUNT_UNIQUE_EMAIL = True              # Garante que cada e-mail seja único no sistema
+
+# URLs de redirecionamento
+LOGIN_REDIRECT_URL = '/' 
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Configuração de e-mail para desenvolvimento (imprime no console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+  
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
