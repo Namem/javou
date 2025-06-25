@@ -1,31 +1,35 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}Login{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-5">
   <div class="col-md-6">
     <div class="card card-primary">
       <div class="card-header">
         <h3 class="card-title">{% trans "Sign In" %}</h3>
       </div>
       <div class="card-body">
-        <p>{% blocktrans %}Bem-vindo de volta! Faça o login para acessar o sistema. Se você ainda não tem uma conta, por favor
-          <a href="{{ signup_url }}">cadastre-se aqui</a>.{% endblocktrans %}
+        <p>
+          {% trans "Bem-vindo de volta! Faça o login para acessar o sistema. Se você ainda não tem uma conta, por favor" %}
+          <a href="{% url 'account_signup' %}">{% trans "cadastre-se aqui" %}</a>.
         </p>
 
         <form class="login" method="POST" action="{% url 'account_login' %}">
           {% csrf_token %}
           
-          {{ form.as_p }}
+          {{ form|crispy }}
           
           {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
           {% endif %}
           
-          <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-          <button class="btn btn-primary float-right" type="submit">{% trans "Sign In" %}</button>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Esqueceu a senha?" %}</a>
+            <button class="btn btn-primary" type="submit">{% trans "Entrar" %}</button>
+          </div>
         </form>
       </div>
     </div>

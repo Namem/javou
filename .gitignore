@@ -1,0 +1,52 @@
+# Arquivo de Segredos
+# ESSENCIAL: Nunca envie suas senhas e chaves para o Git!
+.env
+
+# Ambientes Virtuais do Python
+# Ignora a pasta do ambiente virtual local.
+venv/
+env/
+*/venv/
+*/env/
+
+# Arquivos de Cache e Bytecode do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Banco de Dados de Desenvolvimento
+# Ignora o banco de dados SQLite usado para testes locais.
+db.sqlite3
+db.sqlite3-journal
+
+# Arquivos de Upload do Usuário (Django Media)
+# Ignora a pasta onde o Django salva os arquivos que os usuários enviam.
+media/
+
+# Arquivos Estáticos Coletados (Django Static)
+# Ignora a pasta onde o `collectstatic` reúne todos os arquivos estáticos.
+staticfiles/
+
+# Arquivos de IDEs e Editores de Código
+# Ignora pastas de configuração de editores como VSCode e PyCharm.
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de Log
+# Ignora qualquer arquivo de log gerado pela aplicação.
+*.log
+logs/
+
+# Arquivos de Sistema Operacional
+# Ignora arquivos gerados pelo macOS e Windows.
+.DS_Store
+Thumbs.db
+
+# Ambientes Virtuais do Python
+# Ignora a pasta do seu ambiente virtual local.
+venv/
+env/
+*/venv/
+*/env/

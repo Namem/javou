@@ -3,7 +3,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
-  <title>{% block title %}Helpdesk{% endblock %}</title>
+  <title>{% block title %}Resolve AI{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
@@ -38,23 +38,36 @@
 
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a href="/" class="brand-link">
-      <span class="brand-text font-weight-light">Ja abriu chamado?</span>
-    </a>
+      <img src="{% static 'dist/img/logo.png' %}" alt="Resolve AI Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">Resolve AI</span>
+      </a>
     <div class="sidebar">
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          
           <li class="nav-item">
-            <a href="/" class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="{% url 'dashboard:dashboard' %}" class="nav-link {% if request.resolver_match.app_name == 'dashboard' %}active{% endif %}">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
           </li>
+
           <li class="nav-item">
-            <a href="{% url 'listar_chamados' %}" class="nav-link"><i class="nav-icon fas fa-list"></i> Chamados</a>
+            <a href="{% url 'chamados:listar_chamados' %}" class="nav-link {% if request.resolver_match.app_name == 'chamados' %}active{% endif %}">
+              <i class="nav-icon fas fa-list"></i>
+              <p>Chamados</p>
+            </a>
           </li>
+          
           {% if user.profile.is_technician %}
           <li class="nav-item">
-            <a href="{% url 'novo_chamado' %}" class="nav-link"><i class="nav-icon fas fa-plus"></i> Novo Chamado</a>
+            <a href="{% url 'chamados:novo_chamado' %}" class="nav-link">
+              <i class="nav-icon fas fa-plus"></i>
+              <p>Novo Chamado</p>
+            </a>
           </li>
           {% endif %}
-        </ul>
+          </ul>
       </nav>
     </div>
   </aside>

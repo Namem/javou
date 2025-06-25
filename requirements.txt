@@ -6,3 +6,6 @@ django-allauth
 requests
 PyJWT
 cryptography
+django-crispy-forms
+crispy-bootstrap4
+gunicorn

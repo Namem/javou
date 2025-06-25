@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Q, CheckConstraint
+
 
 # (Seu modelo Chamado existente fica aqui em cima, sem alterações)
 class Chamado(models.Model):
@@ -55,8 +57,38 @@ class Comentario(models.Model):
     texto = models.TextField("Comentário")
     data_criacao = models.DateTimeField(auto_now_add=True)
 
+    is_internal = models.BooleanField("Nota interna", default=False)
+
+
     class Meta:
         ordering = ['data_criacao'] # Ordena os comentários do mais antigo para o mais novo
 
     def __str__(self):
         return f'Comentário de {self.autor.username} em {self.chamado.titulo}'
+    
+
+class Anexo(models.Model):
+    # O anexo agora pode pertencer a um chamado... (tornamos nullable)
+    chamado = models.ForeignKey(Chamado, on_delete=models.CASCADE, related_name='anexos', null=True, blank=True)
+    # ...ou a um comentário.
+    comentario = models.ForeignKey(Comentario, on_delete=models.CASCADE, related_name='anexos', null=True, blank=True)
+    
+    arquivo = models.FileField(upload_to='anexos/%Y/%m/%d/')
+    data_upload = models.DateTimeField(auto_now_add=True)
+    
+
+    class Meta:
+        # Adiciona uma restrição no banco de dados para garantir a integridade dos dados
+        constraints = [
+            CheckConstraint(
+                check=(
+                    Q(chamado__isnull=False) & Q(comentario__isnull=True) |
+                    Q(chamado__isnull=True) & Q(comentario__isnull=False)
+                ),
+                name='anexo_apenas_um_pai'
+            )
+        ]
+
+    def __str__(self):
+        import os
+        return os.path.basename(self.arquivo.name)

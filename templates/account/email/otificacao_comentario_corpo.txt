@@ -1,0 +1,12 @@
+Olá, {{ solicitante_nome }}.
+
+O técnico {{ autor_comentario }} adicionou um novo comentário ao seu chamado #{{ chamado_id }} - "{{ chamado_titulo }}".
+
+Comentário:
+{{ comentario_texto }}
+
+Para ver os detalhes, acesse o seguinte link:
+{{ chamado_url }}
+
+Atenciosamente,
+Equipe de Suporte Resolve AI

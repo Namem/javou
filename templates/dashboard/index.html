@@ -6,57 +6,27 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ total_abertos }}</h3>
-                    <p>Chamados Abertos</p>
-                </div>
-                <div class="icon"><i class="ion ion-bag"></i></div>
-            </div>
         </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ total_em_atendimento }}</h3>
-                    <p>Em Atendimento</p>
-                </div>
-                <div class="icon"><i class="ion ion-stats-bars"></i></div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ total_encerrados }}</h3>
-                    <p>Encerrados</p>
-                </div>
-                <div class="icon"><i class="ion ion-person-add"></i></div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-secondary">
-                <div class="inner">
-                    <h3>{{ total_chamados }}</h3>
-                    <p>Total de Chamados</p>
-                </div>
-                <div class="icon"><i class="ion ion-pie-graph"></i></div>
-            </div>
-        </div>
-    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="card card-danger">
-                <div class="card-header">
-                    <h3 class="card-title">Chamados por Status</h3>
-                </div>
+                <div class="card-header"><h3 class="card-title">Chamados por Status</h3></div>
                 <div class="card-body">
                     <canvas id="statusChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-6">
+            <div class="card card-success">
+                <div class="card-header"><h3 class="card-title">Chamados por Categoria</h3></div>
+                <div class="card-body">
+                    <canvas id="categoriaChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
             </div>
-    </div>
+        </div>
+        </div>
 </div>
 {% endblock %}
 
@@ -66,32 +36,49 @@
 
 <script>
 $(function () {
-  // Pega os dados do contexto do Django
+  // --- Gráfico de Status (Doughnut) --- (sem alteração)
   var statusLabels = {{ labels_status|safe }};
   var statusData = {{ data_status|safe }};
-
-  // Configuração do Gráfico de Pizza (Doughnut)
   var donutChartCanvas = $('#statusChart').get(0).getContext('2d');
   var donutData = {
     labels: statusLabels,
-    datasets: [
-      {
-        data: statusData,
-        backgroundColor : ['#00c0ef', '#f39c12', '#00a65a'], // Cores para Aberto, Em Atendimento, Encerrado
-      }
-    ]
+    datasets: [{ data: statusData, backgroundColor : ['#00c0ef', '#f39c12', '#00a65a'], }]
+  };
+  new Chart(donutChartCanvas, { type: 'doughnut', data: donutData, options: { maintainAspectRatio : false, responsive : true }});
+
+
+  var categoriaLabels = {{ labels_categoria|safe }};
+  var categoriaData = {{ data_categoria|safe }};
+  var barChartCanvas = $('#categoriaChart').get(0).getContext('2d');
+  var barChartData = {
+      labels: categoriaLabels,
+      datasets: [{
+          label: 'Total de Chamados',
+          backgroundColor: 'rgba(60,141,188,0.9)',
+          borderColor: 'rgba(60,141,188,0.8)',
+          pointRadius: false,
+          pointColor: '#3b8bba',
+          pointStrokeColor: 'rgba(60,141,188,1)',
+          pointHighlightFill: '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data: categoriaData
+      }]
+  };
+  var barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    datasetFill: false,
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true,
+                stepSize: 1 // Força o eixo Y a usar apenas números inteiros
+            }
+        }]
+    }
   }
-  var donutOptions = {
-    maintainAspectRatio : false,
-    responsive : true,
-  }
-  
-  // Cria o gráfico
-  new Chart(donutChartCanvas, {
-    type: 'doughnut',
-    data: donutData,
-    options: donutOptions
-  });
-})
+  new Chart(barChartCanvas, { type: 'bar', data: barChartData, options: barChartOptions });
+
+});
 </script>
 {% endblock %}

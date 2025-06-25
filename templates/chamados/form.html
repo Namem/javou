@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 {% block title %}{{ titulo }}{% endblock %}
+
 {% block content %}
-<h1>{{ titulo }}</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  {% for field in form %}
-    <div class="form-group">
-      <label>{{ field.label }}</label>
-      {{ field }}
-      {{ field.errors }}
+<div class="card card-primary">
+  <div class="card-header">
+    <h3 class="card-title">{{ titulo }}</h3>
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card-body">
+      {{ form|crispy }}
     </div>
-  {% endfor %}
-  <button type="submit" class="btn btn-success">Salvar</button>
-  <a href="{% url 'listar_chamados' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+    <div class="card-footer">
+      <button type="submit" class="btn btn-success">Salvar</button>
+      <a href="{% url 'chamados:listar_chamados' %}" class="btn btn-secondary">Cancelar</a>
+    </div>
+  </form>
+</div>
 {% endblock %}

@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
-{% block title %}Chamados{% endblock %}
-{% block content %}
+{% load crispy_forms_tags %}
 
+{% block title %}Chamados{% endblock %}
+
+{% block content %}
 <div class="card">
   <div class="card-header">
     <h3 class="card-title">
@@ -25,11 +27,26 @@
     <div class="modal fade" id="modalNovoChamado" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Novo Chamado</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
+          <form method="post" action="{% url 'chamados:novo_chamado' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                {% crispy form %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+              <button type="submit" class="btn btn-primary">Salvar Chamado</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
     {% endif %}
-
     <div class="table-responsive">
       <table id="tabela-chamados" class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -49,7 +66,7 @@
           {% for chamado in chamados %}
             <tr>
               <td>{{ chamado.id }}</td>
-              <td><a href="{% url 'detalhe_chamado' chamado.id %}">{{ chamado.titulo }}</a></td>
+              <td><a href="{% url 'chamados:detalhe_chamado' chamado.id %}">{{ chamado.titulo }}</a></td>
               <td><span class="badge badge-info">{{ chamado.get_status_display }}</span></td>
               <td>
                 {% if chamado.prioridade == 'ALTA' %}
@@ -64,12 +81,12 @@
               
               {% if user.profile.is_technician %}
                 <td>
-                  <a href="{% url 'editar_chamado' chamado.id %}" class="btn btn-sm btn-warning" title="Editar">Editar</a>
+                  <a href="{% url 'chamados:editar_chamado' chamado.id %}" class="btn btn-sm btn-warning" title="Editar">Editar</a>
                   {% if not chamado.responsavel %}
-                    <a href="{% url 'assumir_chamado' chamado.id %}" class="btn btn-sm btn-success" title="Assumir">Assumir</a>
+                    <a href="{% url 'chamados:assumir_chamado' chamado.id %}" class="btn btn-sm btn-success" title="Assumir">Assumir</a>
                   {% endif %}
                   {% if chamado.status != 'ENCERRADO' %}
-                  <form action="{% url 'encerrar_chamado' chamado.id %}" method="post" style="display:inline;">
+                  <form action="{% url 'chamados:encerrar_chamado' chamado.id %}" method="post" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-sm btn-danger" title="Encerrar">Encerrar</button>
                   </form>
@@ -106,4 +123,4 @@
     });
   });
 </script>
-{% endblock %}
+{% endblock %}  
