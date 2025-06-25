@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Base de Conhecimento{% endblock %}
+
+{% block content %}
+<div class="card card-primary card-outline">
+  <div class="card-header">
+    <h2 class="card-title"><i class="fas fa-book-open mr-2"></i>Base de Conhecimento</h2>
+  </div>
+  <div class="card-body">
+    <p class="lead">
+      Bem-vindo à nossa central de ajuda. Navegue pelas categorias abaixo para encontrar a solução que você precisa.
+    </p>
+
+    <hr>
+
+    <h4 class="mt-4">Navegar por Categoria</h4>
+    <div class="row mt-3">
+      {% for categoria in categorias %}
+        <div class="col-md-6 col-lg-4 mb-3">
+          <a href="{% url 'knowledge_base:lista_artigos_por_categoria' categoria.slug %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm card-hover">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title font-weight-bold">
+                  <i class="fas fa-folder-open mr-2 text-primary"></i>{{ categoria.nome }}
+                </h5>
+                <p class="card-text mt-2">
+                  Artigos e soluções sobre este tópico.
+                </p>
+                <div class="mt-auto text-muted">
+                  
+                  {{ categoria.num_artigos_publicados }} 
+                  {% if categoria.num_artigos_publicados == 1 %}
+                    artigo publicado
+                  {% else %}
+                    artigos publicados
+                  {% endif %}
+                  </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% empty %}
+        <div class="col">
+          <p>Nenhuma categoria de artigo foi criada ainda. Volte para a <a href="/admin/knowledge_base/categoriaartigo/">área de administração</a> para criar a primeira.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<style>
+/* Pequeno efeito visual para os cards */
+.card-hover:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 8px 25px rgba(0,0,0,.15) !important;
+}
+</style>
+{% endblock %}

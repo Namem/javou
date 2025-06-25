@@ -10,6 +10,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('dashboard.urls')), 
     path('chamados/', include('chamados.urls')),  
+    path('kb/', include('knowledge_base.urls')),
 ]
 
 

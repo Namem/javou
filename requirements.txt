@@ -9,3 +9,4 @@ cryptography
 django-crispy-forms
 crispy-bootstrap4
 gunicorn
+whitenoise

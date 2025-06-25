@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-  </head>
+</head>
 <body class="hold-transition sidebar-mini sidebar-light-primary">
 <div class="wrapper">
 
@@ -40,7 +40,7 @@
     <a href="/" class="brand-link">
       <img src="{% static 'dist/img/logo.png' %}" alt="Resolve AI Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">Resolve AI</span>
-      </a>
+    </a>
     <div class="sidebar">
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
@@ -59,6 +59,12 @@
             </a>
           </li>
           
+          <li class="nav-item">
+            <a href="{% url 'knowledge_base:lista_categorias' %}" class="nav-link {% if request.resolver_match.app_name == 'knowledge_base' %}active{% endif %}">
+              <i class="nav-icon fas fa-book"></i>
+              <p>Base de Conhecimento</p>
+            </a>
+          </li>
           {% if user.profile.is_technician %}
           <li class="nav-item">
             <a href="{% url 'chamados:novo_chamado' %}" class="nav-link">
@@ -67,7 +73,7 @@
             </a>
           </li>
           {% endif %}
-          </ul>
+        </ul>
       </nav>
     </div>
   </aside>

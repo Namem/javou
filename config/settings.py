@@ -41,10 +41,13 @@ INSTALLED_APPS = [
     'accounts',
     'chamados',
     'dashboard',
+    'knowledge_base',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Esta linha é a mais crítica. Verifique se não há erros de digitação.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -166,6 +169,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 
 MEDIA_URL = '/media/'

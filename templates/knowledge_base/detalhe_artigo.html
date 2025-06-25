@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}{{ artigo.titulo }}{% endblock %}
+
+{% block content %}
+<div class="card card-primary card-outline">
+  <div class="card-header">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb bg-transparent p-0 m-0">
+        <li class="breadcrumb-item"><a href="{% url 'knowledge_base:lista_categorias' %}">Base de Conhecimento</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'knowledge_base:lista_artigos_por_categoria' artigo.categoria.slug %}">{{ artigo.categoria.nome }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ artigo.titulo|truncatechars:50 }}</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="card-body">
+    <h1>{{ artigo.titulo }}</h1>
+    <p class="text-muted">
+      Publicado por: {{ artigo.autor.username|default:'Sistema' }} | Última atualização: {{ artigo.data_atualizacao|date:"d/m/Y" }}
+    </p>
+    <hr>
+    <div class="article-content mt-4">
+      {{ artigo.conteudo|linebreaksbr }}
+    </div>
+  </div>
+  <div class="card-footer text-center">
+    <a href="{% url 'knowledge_base:lista_artigos_por_categoria' artigo.categoria.slug %}" class="btn btn-secondary">Voltar para a Categoria</a>
+  </div>
+</div>
+{% endblock %}
