@@ -65,14 +65,12 @@
               <p>Base de Conhecimento</p>
             </a>
           </li>
-          {% if user.profile.is_technician %}
           <li class="nav-item">
-            <a href="{% url 'chamados:novo_chamado' %}" class="nav-link">
+            <a href="{% url 'chamados:novo_chamado' %}" class="nav-link {% if request.resolver_match.url_name == 'novo_chamado' %}active{% endif %}">
               <i class="nav-icon fas fa-plus"></i>
               <p>Novo Chamado</p>
             </a>
           </li>
-          {% endif %}
         </ul>
       </nav>
     </div>
@@ -102,4 +100,8 @@
 {% block scripts %}{% endblock %}
 
 </body>
+<body class="hold-transition sidebar-mini sidebar-light-primary">
+
+<h1 style="background-color: red; color: white; text-align: center; padding: 20px;">TESTE DE ATUALIZAÇÃO v1</h1>
+<div class="wrapper">
 </html>

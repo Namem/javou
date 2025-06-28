@@ -10,43 +10,17 @@
       {% if user.profile.is_technician %}
         Gerenciamento de Chamados
       {% else %}
-        Chamados em Aberto
+        Meus Chamados
       {% endif %}
     </h3>
-    {% if user.profile.is_technician %}
     <div class="card-tools">
-      <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modalNovoChamado">
+      <a href="{% url 'chamados:novo_chamado' %}" class="btn btn-primary btn-sm">
         <i class="fas fa-plus"></i> Novo Chamado
-      </button>
+      </a>
     </div>
-    {% endif %}
   </div>
 
   <div class="card-body">
-    {% if user.profile.is_technician %}
-    <div class="modal fade" id="modalNovoChamado" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Novo Chamado</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form method="post" action="{% url 'chamados:novo_chamado' %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal-body">
-                {% crispy form %}
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-primary">Salvar Chamado</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    {% endif %}
     <div class="table-responsive">
       <table id="tabela-chamados" class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -56,11 +30,10 @@
             <th>Status</th>
             <th>Prioridade</th>
             <th>Responsável</th>
-            
             {% if user.profile.is_technician %}
               <th>Ações</th>
             {% endif %}
-            </tr>
+          </tr>
         </thead>
         <tbody>
           {% for chamado in chamados %}
@@ -78,7 +51,6 @@
                 {% endif %}
               </td>
               <td>{{ chamado.responsavel.username|default:"—" }}</td>
-              
               {% if user.profile.is_technician %}
                 <td>
                   <a href="{% url 'chamados:editar_chamado' chamado.id %}" class="btn btn-sm btn-warning" title="Editar">Editar</a>
@@ -107,6 +79,7 @@
 {% endblock %}
 
 {% block scripts %}
+{% if chamados %}
 <script>
   $(document).ready(function() {
     $('#tabela-chamados').DataTable({
@@ -123,4 +96,5 @@
     });
   });
 </script>
-{% endblock %}  
+{% endif %}
+{% endblock %}
