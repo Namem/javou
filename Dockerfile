@@ -9,13 +9,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . /app
 
-# Garante que o script seja executável DENTRO do container
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
-# Define nosso script como o ponto de entrada
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-# Define o comando padrão que o entrypoint irá executar no final
 CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
