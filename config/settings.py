@@ -1,9 +1,13 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Carrega as variáveis de ambiente do arquivo .env (ótimo para desenvolvimento local)
+load_dotenv(BASE_DIR / '.env')
 
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -84,11 +88,11 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'helpdesk_db',
-        'USER': 'helpdesk_user',
-        'PASSWORD': '96462191',
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'), # Usa 5432 se a variável não existir
     }
 }
 
@@ -159,8 +163,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATICFILES_DIRS = [BASE_DIR / "static"]
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
